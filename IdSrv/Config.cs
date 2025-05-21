@@ -26,13 +26,6 @@ public static class Config
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile
                 },
-
-                PostLogoutRedirectUris =
-                {
-                    "https://localhost:5001"
-                },
-
-                FrontChannelLogoutUri = "https://localhost:5001/Account/Logout"
             },
             new()
             {
