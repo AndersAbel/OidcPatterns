@@ -43,6 +43,8 @@ builder.Services.AddAuthentication(opt =>
         opt.SaveTokens = true;
 
         opt.MapInboundClaims = false;
+
+        opt.GetClaimsFromUserInfoEndpoint = true;
     });
 
 builder.Services.AddSingleton<LogoutSessions>();

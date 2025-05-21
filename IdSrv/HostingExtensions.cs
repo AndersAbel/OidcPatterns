@@ -24,29 +24,50 @@ internal static class HostingExtensions
         isBuilder.AddInMemoryClients(Config.Clients);
 
 
-        // if you want to use server-side sessions: https://blog.duendesoftware.com/posts/20220406_session_management/
-        // then enable it
-        //isBuilder.AddServerSideSessions();
-        //
-        // and put some authorization on the admin/management pages
-        //builder.Services.AddAuthorization(options =>
-        //       options.AddPolicy("admin",
-        //           policy => policy.RequireClaim("sub", "1"))
-        //   );
-        //builder.Services.Configure<RazorPagesOptions>(options =>
-        //    options.Conventions.AuthorizeFolder("/ServerSideSessions", "admin"));
-
-
         builder.Services.AddAuthentication()
             .AddGoogle(options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
 
-                // register your IdentityServer with Google at https://console.developers.google.com
-                // enable the Google+ API
-                // set the redirect URI to https://localhost:5001/signin-google
-                options.ClientId = "copy client ID from Google here";
-                options.ClientSecret = "copy client secret from Google here";
+                options.ClientId = "999560008429-i4fnstq91ek0sl61pqaics7toir0php5.apps.googleusercontent.com";
+                options.ClientSecret = "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";
+
+            })
+            .AddOpenIdConnect("IdSrv", "Duende IdentityServer", opt =>
+            {
+                opt.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                opt.SignOutScheme = IdentityServerConstants.SignoutScheme;
+
+                opt.Authority = "https://demo.duendesoftware.com";
+
+                opt.ClientId = "interactive.confidential";
+                opt.ClientSecret = "secret";
+
+                opt.ResponseType = "code";
+
+                opt.GetClaimsFromUserInfoEndpoint = true;
+
+                opt.CallbackPath = "/signin-idsrv";
+                opt.SignedOutCallbackPath = "/signout-callback-idsrv";
+
+                opt.SaveTokens = true;
+            })
+            .AddOpenIdConnect("Entra", "Entra Id Common", opt =>
+            {
+                opt.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                opt.SignOutScheme = IdentityServerConstants.SignoutScheme;
+
+                opt.Authority = "https://login.microsoftonline.com/common";
+
+                opt.ClientId = "3d5fb20a-3cff-48d5-8b22-5d207051d916";
+                opt.ClientSecret = "19o8Q~d8Fdpobh6bwtvnBoWTmveME1.W7-bUBbYm"; // Expires 2027-05-21
+
+                opt.CallbackPath = "/signin-entra-common";
+                opt.SignedOutCallbackPath = "/signout-callback-entra-common";
+
+                opt.TokenValidationParameters.ValidateIssuer = false;
+
+                opt.ResponseType = "code";
             });
 
         return builder.Build();
