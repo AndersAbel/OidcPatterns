@@ -12,14 +12,13 @@ public class AccountController : Controller
     {
         await HttpContext.SignOutAsync();
 
-        // return Redirect("/");
+        //return Redirect("/");
 
         var idToken = await HttpContext.GetTokenAsync("id_token");
 
-        var returnUrl = Uri.EscapeDataString("https://localhost:5001");
-
-        return Redirect("https://localhost:5000/connect/endsession" +
-            $"?post_logout_redirect_uri={returnUrl}&id_token_hint={idToken}");
+        return Redirect("https://localhost:5000/connect/endsession?" +
+            $"id_token_hint={idToken}&" +
+            "post_logout_redirect_uri=https://localhost:5001");
     }
 
     [HttpGet]
